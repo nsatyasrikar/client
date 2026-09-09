@@ -8,7 +8,7 @@ import (
 
 func main() {
 	data := flag.String("data", "", "generated JSON root")
-	output := flag.String("output", ".", "client package root")
+	output := flag.String("output", "browser", "browser package root")
 	check := flag.Bool("check", false, "check freshness")
 	flag.Parse()
 	if *data == "" {
