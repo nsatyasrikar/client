@@ -2,7 +2,6 @@ package client
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -73,7 +72,7 @@ func Object(entries ...[2]any) Value[Unknown] {
 }
 func UnsafeExpression(code string) Value[Unknown] {
 	if strings.TrimSpace(code) == "" {
-		panic(fmt.Sprintf("client: empty unsafe expression"))
+		panic("client: empty unsafe expression")
 	}
 	return wrap[Unknown](rawExpr{code})
 }
