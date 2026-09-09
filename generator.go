@@ -78,7 +78,7 @@ func GenerateBindings(root, output string, check bool) error {
 		if e != nil {
 			return e
 		}
-		path := filepath.Join(output, "browser_"+kebab(r.Name)+".go")
+		path := filepath.Join(output, kebab(r.Name)+".go")
 		if check {
 			old, _ := os.ReadFile(path)
 			if string(old) != string(formatted) {
@@ -109,13 +109,16 @@ func goName(s string) string {
 func kebab(s string) string {
 	var b strings.Builder
 	for i, r := range s {
-		if r >= 'A' && r <= 'Z' {
+		switch {
+		case r >= 'A' && r <= 'Z':
 			if i > 0 {
 				b.WriteByte('-')
 			}
 			b.WriteByte(byte(r - 'A' + 'a'))
-		} else {
+		case r >= 'a' && r <= 'z', r >= '0' && r <= '9', r == '-', r == '_':
 			b.WriteRune(r)
+		default:
+			// drop characters that are unsafe in filenames (e.g. "$")
 		}
 	}
 	return b.String()

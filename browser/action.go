@@ -3,4 +3,4 @@ package browser
 
 import "github.com/nsatyasrikar/client"
 
-type Browser_actionType struct{ client.TypeMarker }
+type ActionType struct{ client.TypeMarker }
