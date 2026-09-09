@@ -65,6 +65,20 @@ type Expression interface{ expression }
 type Value[T Type] struct{ node expression }
 
 func (Value[T]) expr() {}
+func (v Value[T]) unwrapNode() expression { return v.node }
+
+// valueNode is implemented by every Value[T]; unwrapExpr uses it to reach
+// the underlying AST node when an expression arrives boxed in a Value[T],
+// which happens whenever a caller passes one through an Expression-typed
+// parameter (Call, CallValue, Join, ArrayOf, Object, ExpressionStatement).
+type valueNode interface{ unwrapNode() expression }
+
+func unwrapExpr(x expression) expression {
+	if v, ok := x.(valueNode); ok {
+		return v.unwrapNode()
+	}
+	return x
+}
 
 type Statement struct{ node statementNode }
 
@@ -93,7 +107,9 @@ type blockStmt struct{ body []Statement }
 func (blockStmt) stmt() {}
 
 func wrap[T Type](n expression) Value[T]             { return Value[T]{node: n} }
-func ExpressionStatement(value Expression) Statement { return Statement{node: exprStmt{value: value}} }
+func ExpressionStatement(value Expression) Statement {
+	return Statement{node: exprStmt{value: unwrapExpr(value)}}
+}
 func Block(statements ...Statement) Statement {
 	return Statement{node: blockStmt{body: append([]Statement(nil), statements...)}}
 }

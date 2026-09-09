@@ -40,7 +40,7 @@ func Template(parts ...string) Value[StringType] {
 func ArrayOf[T Type](values ...Value[T]) Value[Array[T]] {
 	nodes := make([]expression, len(values))
 	for i, v := range values {
-		nodes[i] = v
+		nodes[i] = v.node
 	}
 	return wrap[Array[T]](arrayExpr{nodes})
 }
@@ -67,7 +67,7 @@ func Object(entries ...[2]any) Value[Unknown] {
 		if !ok {
 			panic("client: object value must be expression")
 		}
-		out = append(out, objectEntry{k, v})
+		out = append(out, objectEntry{k, unwrapExpr(v)})
 	}
 	return wrap[Unknown](objectExpr{out})
 }

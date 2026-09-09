@@ -55,14 +55,14 @@ func Index[T, R Type](target Value[T], index Value[NumberType]) Value[R] {
 func Call[R Type](callee Value[Unknown], args ...Expression) Value[R] {
 	nodes := make([]expression, len(args))
 	for i, a := range args {
-		nodes[i] = a
+		nodes[i] = unwrapExpr(a)
 	}
 	return wrap[R](callExpr{callee.node, nodes})
 }
 func CallValue[T, R Type](callee Value[T], args ...Expression) Value[R] {
 	nodes := make([]expression, len(args))
 	for i, a := range args {
-		nodes[i] = a
+		nodes[i] = unwrapExpr(a)
 	}
 	return wrap[R](callExpr{callee.node, nodes})
 }
@@ -89,7 +89,7 @@ func Coalesce[T Type](left Value[Nullable[T]], right Value[T]) Value[T] {
 func Join(parts ...Expression) Value[StringType] {
 	nodes := make([]expression, len(parts))
 	for i, p := range parts {
-		nodes[i] = p
+		nodes[i] = unwrapExpr(p)
 	}
 	return wrap[StringType](templateExpr{nodes})
 }
