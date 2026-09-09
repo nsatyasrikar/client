@@ -53,6 +53,11 @@ type Promise[T Type] struct{}
 
 func (Promise[T]) clientType() {}
 
+// TypeMarker lets types outside this package satisfy Type by embedding it.
+type TypeMarker struct{}
+
+func (TypeMarker) clientType() {}
+
 type expression interface{ expr() }
 type statementNode interface{ stmt() }
 type Expression interface{ expression }
